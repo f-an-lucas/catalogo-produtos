@@ -1,0 +1,39 @@
+server:
+  port: 8088
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:catalogo;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2
+
+# Swagger UI custom path and assets
+springdoc:
+  swagger-ui:
+    path: /docs
+    display-request-duration: true
+    operationsSorter: method
+    tagsSorter: alpha
+    docExpansion: none
+    tryItOutEnabled: true
+    customCssUrl: /swagger-ui/swagger-custom.css
+    customfavIcon: /swagger-ui/logo.png
+  api-docs:
+    path: /v3/api-docs
+
+app:
+  name: "Catálogo de Produtos"
+  description: "API básica de loja com produtos e categorias"
+  version: "0.1.0"

@@ -1,0 +1,182 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.4</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>br.com.catalogo.produtos</groupId>
+    <artifactId>catalogo-produtos</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>catalogo-produtos</name>
+    <description>API de catálogo de produtos</description>
+
+    <properties>
+        <java.version>21</java.version>
+        <modelmapper.version>3.2.1</modelmapper.version>
+        <springdoc-openapi-starter-webmvc-ui.version>2.6.0</springdoc-openapi-starter-webmvc-ui.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- ###########################################################################################################
+            Web básico do Spring Boot
+                Base para criar APIs REST com Spring Boot. Traz o necessário para desenvolver aplicações web e serviços
+                RESTful.
+                Inclui várias bibliotecas importantes como dependência transitiva:
+                    spring-web .........................: Suporte à criação de controllers, @RestController
+                    spring-webmvc ......................: Dispatcher Servlet, roteamento, filtros etc.
+                    jackson-databind ...................: Serialização/deserialização JSON ↔ Java
+                    spring-boot-starter ................: Logging, autoconfiguração, beans padrões
+                    validation-api + hibernate-validator: Suporte a validações com @Valid, @NotNull etc.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- ###########################################################################################################
+            Validação no Spring Boot
+                Adiciona suporte à validação de beans (Java Bean Validation) em aplicações Spring Boot.
+                Configura automaticamente o Hibernate Validator, que é a implementação de referência da
+                especificação Jakarta Bean Validation (JSR 380 / JSR 303).
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- ###########################################################################################################
+            Suporte a JPA com Spring
+                Starter oficial para trabalhar com persistência de dados usando JPA (Java Persistence API) e ORM com
+                Hibernate.
+                Para que serve?
+                    - Criar e manipular entidades JPA (@Entity);
+                    - Usar repositórios automáticos (JpaRepository, CrudRepository);
+                    - Fazer queries com JPQL, @Query, Query Methods, ou Specification;
+                    - Integrar com banco de dados relacional (ex: PostgreSQL, MySQL, Oracle, H2, etc.);
+                    - Gerenciar transações com @Transactional.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- ###########################################################################################################
+            Banco relacional em memória
+                Usado para desenvolvimento e testes.
+        -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- ###########################################################################################################
+             Documentação Swagger com Springdoc OpenAPI
+                 Integra a documentação automática da sua API REST no Spring Boot, utilizando o Springdoc OpenAPI com
+                 interface Swagger UI.
+                 Serve para:
+                     - Gerar automaticamente a documentação OpenAPI 3 da sua API REST;
+                     - Criar uma interface web interativa para explorar a API, que fica disponível normalmente em:
+                         http://host:port/swagger-ui/index.html
+                     - Facilitar a visualização dos endpoints, métodos HTTP, parâmetros, modelos, etc;
+                     - Usar as anotações do Swagger/OpenAPI (como @Operation, @Schema) para melhorar a documentação;
+                     - Integrar de forma simples com Spring MVC (webmvc no artifactId).
+         -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
+        </dependency>
+
+        <!-- ###########################################################################################################
+            Reduz boilerplate (código repetitivo) em classes Java usando anotações.
+                Biblioteca Java que gera automaticamente código repetitivo como getters, setters, construtores,
+                toString(), equals(), entre outros, em tempo de compilação. Isso ajuda a reduzir boilerplate e
+                tornar o código mais limpo e legível.
+        -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- ###########################################################################################################
+            Testes com Spring Boot
+                Starter oficial de testes do Spring Boot. Reúne diversas bibliotecas amplamente usadas para escrever e
+                executar testes automatizados, com foco em testes unitários, de integração, de web, mock, etc.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- ###########################################################################################################
+            Mapeamento de objetos DTO para entidades e vice-versa
+                Biblioteca do ModelMapper, que serve para mapear objetos Java automaticamente, principalmente entre:
+                    - Entidades (ex: UsuarioEntity)
+                    - e DTOs (ex: UsuarioDTO)
+        -->
+        <dependency>
+            <groupId>org.modelmapper</groupId>
+            <artifactId>modelmapper</artifactId>
+            <version>${modelmapper.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <!-- #######################################################################################################
+                        Suporte a builds nativos (GraalVM)
+                            Compila a aplicação Java para um executável nativo, ou seja, um binário que pode ser executado
+                            diretamente no sistema operacional, sem necessidade de uma JVM instalada.
+                    -->
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- #######################################################################################################
+                    Empacotamento padrão do Spring Boot
+                        Plugin oficial do Spring Boot para Maven para facilitar o empacotamento, execução e deploy da
+                        aplicação Spring Boot.
+                        1. Cria um JAR executável com dependências embutidas (fat jar ou uber jar);
+                        2. Adiciona um manifesto com ponto de entrada (Main-Class) no JAR;
+                        3. Permite rodar a aplicação com:
+                            mvn spring-boot:run
+                        4. Permite empacotar com:
+                            mvn clean package
+                -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Plugin de compilação com suporte a debug -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <debug>true</debug>
+                    <debuglevel>lines,vars,source</debuglevel>
+                    <!-- Garante a captura dos nomes de parâmetros em runtime -->
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

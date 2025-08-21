@@ -31,23 +31,29 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public Page<CategoryResponse> findAll(CategoryFilter filter, Pageable pageable) {
-        return this.repository.findAll(CategorySpec.withFilter(filter), pageable)
-                .map(c -> this.mapper.toDTO(c, CategoryResponse.class));
+        return this.repository.findAll(
+                CategorySpec.withFilter(filter),
+                pageable
+        ).map(category -> this.mapper.toDTO(category, CategoryResponse.class));
     }
 
     @Transactional(readOnly = true)
     public CategoryResponse findById(Long id) {
-        Category category = this.repository.findById(id).orElseThrow(
-                () -> new NotFoundException("Categoria com ID '%s' não encontrada!".formatted(id))
+        return this.mapper.toDTO(
+                this.repository.findById(id)
+                        .orElseThrow(() -> new NotFoundException(
+                                "Categoria com ID '%s' não encontrada!".formatted(id)
+                        )),
+                CategoryResponse.class
         );
-        return this.mapper.toDTO(category, CategoryResponse.class);
     }
 
     @Transactional(readOnly = true)
     public Page<CategoryResponse> findByName(String name, Pageable pageable) {
         return this.repository.findByNameNormalizedContainingIgnoreCase(
-                TextNormalizer.normalizeText(name), pageable
-        ).map(c -> mapper.toDTO(c, CategoryResponse.class));
+                TextNormalizer.normalizeText(name),
+                pageable
+        ).map(category -> this.mapper.toDTO(category, CategoryResponse.class));
     }
 
     @Transactional
@@ -75,7 +81,7 @@ public class CategoryService {
 
     private void nameExists(String name) {
         if (this.repository.existsByNameIgnoreCase(name)) {
-            throw new ConflictException("Categoria '%s' já está cadastrada. ".formatted(name));
+            throw new ConflictException("Categoria '%s' já está cadastrada!".formatted(name));
         }
     }
 

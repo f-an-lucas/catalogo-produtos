@@ -5,9 +5,6 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 @Schema(name = "CategoryFilter", description = "Filtro para pesquisa de categorias de produtos.")
 public class CategoryFilter {
 

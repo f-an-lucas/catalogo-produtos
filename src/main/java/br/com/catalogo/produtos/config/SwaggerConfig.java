@@ -18,12 +18,27 @@ import java.util.List;
 public class SwaggerConfig implements WebMvcConfigurer {
 
 	@Bean
-	public GroupedOpenApi grupoPublicacoes() {
+	public GroupedOpenApi groupAll() {
 		return GroupedOpenApi.builder()
-				.group("Catalogo")
+				.group("All")
 				.pathsToMatch("/api/**")
 				.build();
 	}
+    @Bean
+    public GroupedOpenApi groupProducts() {
+        return GroupedOpenApi.builder()
+                .group("Products")
+                .pathsToMatch("/api/v1/products/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi groupCategories() {
+        return GroupedOpenApi.builder()
+                .group("Categories")
+                .pathsToMatch("/api/v1/categories/**")
+                .build();
+    }
 
     @Bean
     public OpenAPI api(

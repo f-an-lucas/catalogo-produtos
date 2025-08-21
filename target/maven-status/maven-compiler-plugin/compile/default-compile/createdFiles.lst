@@ -18,10 +18,11 @@ br/com/catalogo/produtos/controller/ProductController.class
 br/com/catalogo/produtos/spec/CategorySpec.class
 br/com/catalogo/produtos/CatalogoProdutosApplication.class
 br/com/catalogo/produtos/entity/Category.class
+br/com/catalogo/produtos/filter/ProductFilter.class
 br/com/catalogo/produtos/dto/CategoryRequest.class
 br/com/catalogo/produtos/exception/ConflictException.class
 br/com/catalogo/produtos/config/ModelMapperConfig.class
 br/com/catalogo/produtos/controller/CategoryController.class
-br/com/catalogo/produtos/mapper/ProductMapper.class
 br/com/catalogo/produtos/config/SwaggerConfig.class
+br/com/catalogo/produtos/spec/ProductSpec.class
 br/com/catalogo/produtos/dto/ProductRequest.class

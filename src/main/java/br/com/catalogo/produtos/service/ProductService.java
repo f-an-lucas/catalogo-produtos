@@ -104,6 +104,33 @@ public class ProductService {
         return dto;
     }
 
+    @Transactional
+    public ProductResponseDTO addToStock(Long id, Long quantity) {
+        this.checkQuantity(quantity);
+        Product product = this.findEntityById(id);
+        product.setStock(product.getStock() + quantity);
+        return this.mapper.toDTO(this.repository.save(product));
+    }
+
+    @Transactional
+    public ProductResponseDTO removeFromStock(Long id, Long quantity) {
+        this.checkQuantity(quantity);
+        Product product = this.findEntityById(id);
+
+        if (product.getStock() < quantity) {
+            throw new ConflictException("Estoque insuficiente para o produto '%s'".formatted(product.getName()));
+        }
+
+        product.setStock(product.getStock() - quantity);
+        return this.mapper.toDTO(this.repository.save(product));
+    }
+
+    private void checkQuantity(Long quantity) {
+        if (quantity == null || quantity <= 0L) {
+            throw new IllegalArgumentException("Quantidade deve ser positiva!");
+        }
+    }
+
     private void nameExists(String name) {
         if (this.repository.existsByNameIgnoreCase(name)) {
             throw new ConflictException("Produto '%s' já está cadastrado!".formatted(name));

@@ -29,6 +29,8 @@ http://localhost:8088/h2
 - `POST /api/v1/products` — cria produto
 - `PUT /api/v1/products/{id}` — atualiza produto
 - `DELETE /api/v1/products/{id}` — remove produto
+- `PUT /api/v1/products/addToStock/{id}` — adiciona produtos ao estoque
+- `PUT /api/v1/products/removeFromStock/{id}` — remove produtos do estoque
 
 ### Categorias
 - `GET /api/v1/categories` — lista paginada de categorias (filtros disponíveis, `?page=0&size=10&sort=price,desc`)

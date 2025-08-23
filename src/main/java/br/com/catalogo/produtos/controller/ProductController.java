@@ -101,4 +101,20 @@ public class ProductController {
         return ResponseEntity.ok(this.service.delete(id));
     }
 
+    @Operation(summary = "Adiciona produtos ao estoque.")
+    @PutMapping(path = "/addToStock/{id}")
+    public ResponseEntity<ProductResponseDTO> addToStock(
+            @PathVariable Long id,
+            @RequestParam Long quantity) {
+        return ResponseEntity.ok(this.service.addToStock(id, quantity));
+    }
+
+    @Operation(summary = "Remove produtos do estoque.")
+    @PutMapping(path = "/removeFromStock/{id}")
+    public ResponseEntity<ProductResponseDTO> removeFromStock(
+            @PathVariable Long id,
+            @RequestParam Long quantity) {
+        return ResponseEntity.ok(this.service.removeFromStock(id, quantity));
+    }
+
 }

@@ -12,12 +12,13 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductRequest {
+public class ProductInsertRequestDTO {
 
     @NotBlank
     @Size(max = 120)
     String name;
 
+    @NotBlank
     @Size(max = 500)
     String description;
 
@@ -27,7 +28,7 @@ public class ProductRequest {
 
     @NotNull
     @Min(0)
-    Integer stock;
+    Long stock;
 
     @NotNull
     Long categoryId;

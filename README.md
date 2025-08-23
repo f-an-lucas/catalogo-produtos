@@ -1,4 +1,5 @@
-# Catálogo de Produtos (Spring Boot 3, Java 21)
+# Catálogo de Produtos
+## Java - EDUC360
 
 API simples de loja com produtos e categorias, com CRUD completo, validação, paginação/sorting e Swagger UI customizado.
 
@@ -24,10 +25,25 @@ http://localhost:8088/h2
 - `PUT /api/v1/products/{id}` — atualiza
 - `DELETE /api/v1/products/{id}` — remove
 
-- `GET /api/v1/categories`
-- `POST /api/v1/categories`
-- `PUT /api/v1/categories/{id}`
-- `DELETE /api/v1/categories/{id}`
+## Endpoints principais
+
+### Produtos
+- `GET /api/v1/products` — lista paginada de produtos (filtros disponíveis, `?page=0&size=10&sort=price,desc`)
+- `GET /api/v1/products/{id}` — busca produto pelo ID
+- `GET /api/v1/products/searchByName?name=valor` — busca produtos por parte ou nome completo (case-insensitive e ignorando acentos)
+- `GET /api/v1/products/category/{id}` — lista produtos por categoria (ID)
+- `GET /api/v1/products/category/searchByName?name=valor` — lista produtos por parte ou nome completo da categoria (case-insensitive e ignorando acentos)
+- `POST /api/v1/products` — cria produto
+- `PUT /api/v1/products/{id}` — atualiza produto
+- `DELETE /api/v1/products/{id}` — remove produto
+
+### Categorias
+- `GET /api/v1/categories` — lista paginada de categorias (filtros disponíveis, `?page=0&size=10&sort=price,desc`)
+- `GET /api/v1/categories/{id}` — busca categoria pelo ID
+- `GET /api/v1/categories/searchByName?name=valor` — busca categorias por parte ou nome completo (case-insensitive e ignorando acentos)
+- `POST /api/v1/categories` — cria categoria
+- `PUT /api/v1/categories/{id}` — atualiza categoria
+- `DELETE /api/v1/categories/{id}` — remove categoria
 
 ## Exemplos cURL
 ```bash
@@ -49,5 +65,4 @@ docker run -p 8080:8080 catalogo-produtos:0.0.1-SNAPSHOT
 ```
 
 ## Observações
-- Banco H2 em memória para desenvolvimento (com `data.sql`). Troque para Postgres facilmente mudando `spring.datasource`.
-- Swagger UI customizado com CSS e favicon em `src/main/resources/static/swagger-ui/`.
+- Banco H2 em memória para desenvolvimento (com `data.sql`).

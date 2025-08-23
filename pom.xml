@@ -131,6 +131,21 @@
             <version>${modelmapper.version}</version>
         </dependency>
 
+        <!-- API do MapStruct -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+
+        <!-- Processador de anotações (gera o código do mapper) -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.6.0</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -1,102 +1,105 @@
 package br.com.catalogo.produtos.service;
 
-import br.com.catalogo.produtos.config.MapperUtils;
-import br.com.catalogo.produtos.dto.CategoryRequest;
-import br.com.catalogo.produtos.dto.CategoryResponse;
-import br.com.catalogo.produtos.dto.ProductRequest;
-import br.com.catalogo.produtos.entity.Category;
+import br.com.catalogo.produtos.dto.ProductInsertRequestDTO;
+import br.com.catalogo.produtos.dto.ProductRequestDTO;
+import br.com.catalogo.produtos.dto.ProductResponseDTO;
 import br.com.catalogo.produtos.entity.Product;
 import br.com.catalogo.produtos.exception.ConflictException;
 import br.com.catalogo.produtos.exception.NotFoundException;
-import br.com.catalogo.produtos.dto.ProductResponse;
 import br.com.catalogo.produtos.filter.ProductFilter;
+import br.com.catalogo.produtos.mapper.ProductMapper;
 import br.com.catalogo.produtos.repository.ProductRepository;
 import br.com.catalogo.produtos.spec.ProductSpec;
 import br.com.catalogo.produtos.util.TextNormalizer;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-    private final MapperUtils mapper;
+    private final ProductMapper mapper;
     private final ProductRepository repository;
-
-    public ProductService(
-            MapperUtils mapper,
-            ProductRepository repository
-    ) {
-        this.mapper = mapper;
-        this.repository = repository;
-    }
+    private final CategoryService categoryService;
 
     @Transactional(readOnly = true)
-    public Page<ProductResponse> findAll(ProductFilter filter, Pageable pageable) {
+    public Page<ProductResponseDTO> findAll(ProductFilter filter, Pageable pageable) {
         return this.repository.findAll(
                 ProductSpec.withFilter(filter),
                 pageable
-        ).map(product -> this.mapper.toDTO(product, ProductResponse.class));
+        ).map(this.mapper::toDTO);
     }
 
     @Transactional(readOnly = true)
-    public ProductResponse findById(Long id) {
+    public ProductResponseDTO findById(Long id) {
         return this.mapper.toDTO(
                 this.repository.findById(id)
                         .orElseThrow(() -> new NotFoundException(
                                 "Produto com ID '%s' não encontrado!".formatted(id)
-                        )),
-                ProductResponse.class
-        );
+                        )));
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponse> findByName(String name, Pageable pageable) {
+    public Product findEntityById(Long id) {
+        return this.repository.findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                        "Produto com ID '%s' não encontrado!".formatted(id)
+                ));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductResponseDTO> findByName(String name, Pageable pageable) {
         return this.repository.findByNameNormalizedContainingIgnoreCase(
                 TextNormalizer.normalizeText(name),
                 pageable
-        ).map(product -> this.mapper.toDTO(product, ProductResponse.class));
+        ).map(this.mapper::toDTO);
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponse> findByCategoryId(Long id, Pageable pageable) {
+    public Page<ProductResponseDTO> findByCategoryId(Long id, Pageable pageable) {
         return this.repository.findByCategory_Id(
                 id,
                 pageable
-        ).map(product -> this.mapper.toDTO(product, ProductResponse.class));
+        ).map(this.mapper::toDTO);
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponse> findByCategoryName(String name, Pageable pageable) {
+    public Page<ProductResponseDTO> findByCategoryName(String name, Pageable pageable) {
         return this.repository.findByCategory_NameNormalizedContainingIgnoreCase(
                 TextNormalizer.normalizeText(name),
                 pageable
-        ).map(product -> this.mapper.toDTO(product, ProductResponse.class));
+        ).map(this.mapper::toDTO);
     }
 
     @Transactional
-    public ProductResponse create(ProductRequest dto) {
+    public ProductResponseDTO create(ProductInsertRequestDTO dto) {
         this.nameExists(dto.getName());
-        Product product = this.mapper.toEntity(dto, Product.class);
-        product.setId(null);
-        return this.mapper.toDTO(this.repository.save(product), ProductResponse.class);
+        Product product = this.mapper.toEntity(dto);
+        product.setCategory(this.categoryService.findEntityById(dto.getCategoryId()));
+        return this.mapper.toDTO(this.repository.save(product));
     }
 
     @Transactional
-    public ProductResponse update(Long id, ProductRequest dto) {
-        Product product = this.mapper.toEntity(this.findById(id),  Product.class);
+    public ProductResponseDTO update(Long id, ProductRequestDTO dto) {
+        Product product = this.findEntityById(id);
+
         this.nameExists(product.getName(), dto.getName());
-        product.setName(dto.getName());
-        product.setDescription(dto.getDescription());
-        product.setPrice(dto.getPrice());
-        product.setStock(dto.getStock());
-        return this.mapper.toDTO(this.repository.save(product), ProductResponse.class);
+
+        this.mapper.updateFromDto(dto, product);
+
+        if (dto.getCategoryId() != null) {
+            product.setCategory(this.categoryService.findEntityById(dto.getCategoryId()));
+        }
+
+        return this.mapper.toDTO(this.repository.save(product));
     }
 
     @Transactional
-    public ProductResponse delete(Long id) {
-        ProductResponse dto = this.findById(id);
+    public ProductResponseDTO delete(Long id) {
+        ProductResponseDTO dto = this.findById(id);
         this.repository.deleteById(id);
         return dto;
     }

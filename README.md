@@ -1,7 +1,7 @@
 # Catálogo de Produtos
 ## Java - EDUC360
 
-API simples de loja com produtos e categorias, com CRUD completo, validação, paginação/sorting e Swagger UI customizado.
+API simples de loja com produtos e categorias, com CRUD completo, validação, paginação/sorting e Swagger UI.
 
 ## Requisitos
 - Java 21
@@ -17,13 +17,6 @@ http://localhost:8088/v3/api-docs
 # H2 console:
 http://localhost:8088/h2
 ```
-
-## Endpoints principais
-- `GET /api/v1/products` — lista paginada (`?page=0&size=10&sort=price,desc`)
-- `POST /api/v1/products` — cria produto
-- `GET /api/v1/products/{id}` — detalhe
-- `PUT /api/v1/products/{id}` — atualiza
-- `DELETE /api/v1/products/{id}` — remove
 
 ## Endpoints principais
 

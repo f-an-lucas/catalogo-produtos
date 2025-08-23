@@ -119,18 +119,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- ###########################################################################################################
-            Mapeamento de objetos DTO para entidades e vice-versa
-                Biblioteca do ModelMapper, que serve para mapear objetos Java automaticamente, principalmente entre:
-                    - Entidades (ex: UsuarioEntity)
-                    - e DTOs (ex: UsuarioDTO)
-        -->
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>${modelmapper.version}</version>
-        </dependency>
-
         <!-- API do MapStruct -->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -181,7 +169,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.14.0</version>
                 <configuration>
                     <debug>true</debug>
                     <debuglevel>lines,vars,source</debuglevel>

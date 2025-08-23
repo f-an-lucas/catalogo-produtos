@@ -17,11 +17,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryMapper mapper;
     private final CategoryRepository repository;
+
+    public CategoryService(
+            CategoryRepository repository,
+            CategoryMapper mapper
+    ) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
 
     @Transactional(readOnly = true)
     public Page<CategoryResponseDTO> findAll(CategoryFilter filter, Pageable pageable) {

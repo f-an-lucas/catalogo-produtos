@@ -4,12 +4,9 @@ import br.com.catalogo.produtos.dto.ProductInsertRequestDTO;
 import br.com.catalogo.produtos.dto.ProductRequestDTO;
 import br.com.catalogo.produtos.dto.ProductResponseDTO;
 import br.com.catalogo.produtos.entity.Product;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper {
 
     ProductResponseDTO toDTO(Product entity);

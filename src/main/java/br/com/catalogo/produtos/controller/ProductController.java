@@ -7,6 +7,7 @@ import br.com.catalogo.produtos.filter.ProductFilter;
 import br.com.catalogo.produtos.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +49,7 @@ public class ProductController {
     @Operation(summary = "Lista os produtos por nome (completo ou parte). A busca ignora letras maiúsculas/minúsculas e acentos.")
     @GetMapping(path = "/searchByName")
     public ResponseEntity<Page<ProductResponseDTO>> findByName(
-            @ParameterObject @RequestParam String name,
+            @RequestParam String name,
             @ParameterObject @PageableDefault(size = 10) Pageable pageable
     ) {
         return ResponseEntity.ok(this.service.findByName(name, pageable));
@@ -57,7 +58,7 @@ public class ProductController {
     @Operation(summary = "Lista os produtos por categoria.")
     @GetMapping(path = "/category/{id}")
     public ResponseEntity<Page<ProductResponseDTO>> findByCategoryId(
-            @ParameterObject @PathVariable Long id,
+            @PathVariable Long id,
             @ParameterObject @PageableDefault(size = 10) Pageable pageable
     ) {
         return ResponseEntity.ok(this.service.findByCategoryId(id, pageable));
@@ -66,7 +67,7 @@ public class ProductController {
     @Operation(summary = "Lista os produtos por nome (completo ou parte) da categoria. A busca ignora letras maiúsculas/minúsculas e acentos.")
     @GetMapping(path = "/category/searchByName")
     public ResponseEntity<Page<ProductResponseDTO>> findByCategoryName(
-            @ParameterObject @RequestParam String name,
+            @RequestParam String name,
             @ParameterObject @PageableDefault(size = 10) Pageable pageable
     ) {
         return ResponseEntity.ok(this.service.findByCategoryName(name, pageable));
@@ -75,7 +76,7 @@ public class ProductController {
     @Operation(summary = "Insere um produto.")
     @PostMapping(path = "")
     public ResponseEntity<ProductResponseDTO> create(
-            @RequestBody @Validated ProductInsertRequestDTO dto,
+            @RequestBody @Valid ProductInsertRequestDTO dto,
             UriComponentsBuilder uriBuilder
     ) {
         ProductResponseDTO response = this.service.create(dto);
@@ -88,8 +89,9 @@ public class ProductController {
 
     @Operation(summary = "Atualiza um produto.")
     @PutMapping(path = "/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ProductResponseDTO> update(@PathVariable Long id, @RequestBody @Validated ProductRequestDTO dto) {
+    public ResponseEntity<ProductResponseDTO> update(
+            @PathVariable Long id,
+            @RequestBody @Valid ProductRequestDTO dto) {
         return ResponseEntity.ok(this.service.update(id, dto));
     }
 

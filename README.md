@@ -26,11 +26,11 @@ http://localhost:8088/h2
 - `GET /api/v1/products/searchByName?name=valor` — busca produtos por parte ou nome completo (case-insensitive e ignorando acentos)
 - `GET /api/v1/products/category/{id}` — lista produtos por categoria (ID)
 - `GET /api/v1/products/category/searchByName?name=valor` — lista produtos por parte ou nome completo da categoria (case-insensitive e ignorando acentos)
+- `GET /api/v1/products/barcode/{ean}` — gera o código de barras pelo EAN do produto
+- `GET /api/v1/products/barcode/{id}/productId` — gera o código de barras pelo ID do produto
 - `POST /api/v1/products` — cria produto
 - `PUT /api/v1/products/{id}` — atualiza produto
 - `DELETE /api/v1/products/{id}` — remove produto
-- `PUT /api/v1/products/addToStock/{id}` — adiciona produtos ao estoque
-- `PUT /api/v1/products/removeFromStock/{id}` — remove produtos do estoque
 
 ### Categorias
 - `GET /api/v1/categories` — lista paginada de categorias (filtros disponíveis, `?page=0&size=10&sort=price,desc`)
@@ -42,14 +42,14 @@ http://localhost:8088/h2
 
 ## Exemplos cURL
 ```bash
-curl -X POST http://localhost:8080/api/v1/categories -H "Content-Type: application/json" -d '{"name":"Games"}'
+curl -X POST http://localhost:8080/api/v1/categories -H "Content-Type: application/json" -d '{"name":"Limpeza"}'
 
 curl -X POST http://localhost:8080/api/v1/products -H "Content-Type: application/json" -d '{
-  "name":"Console X",
-  "description":"Último modelo",
-  "price":4599.90,
-  "stock":20,
-  "categoryId":1
+  "name":"Café Pilão 500g",
+  "description":"Café torrado e moído",
+  "price":15.90,
+  "ean":"7891000060308",
+  "categoryId":2
 }'
 ```
 

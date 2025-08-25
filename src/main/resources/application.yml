@@ -28,8 +28,6 @@ springdoc:
     tagsSorter: alpha
     docExpansion: none
     tryItOutEnabled: true
-    customCssUrl: /swagger-ui/swagger-custom.css
-    customfavIcon: /swagger-ui/logo.png
   api-docs:
     path: /v3/api-docs
 

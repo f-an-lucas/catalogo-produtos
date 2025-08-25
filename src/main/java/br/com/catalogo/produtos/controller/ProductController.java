@@ -3,22 +3,32 @@ package br.com.catalogo.produtos.controller;
 import br.com.catalogo.produtos.dto.ProductInsertRequestDTO;
 import br.com.catalogo.produtos.dto.ProductRequestDTO;
 import br.com.catalogo.produtos.dto.ProductResponseDTO;
+import br.com.catalogo.produtos.exception.NotFoundException;
 import br.com.catalogo.produtos.filter.ProductFilter;
 import br.com.catalogo.produtos.service.ProductService;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.apache.coyote.BadRequestException;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.ByteArrayOutputStream;
 import java.net.URI;
+import java.util.Base64;
 
 @Tag(name = "Produtos", description = "Endpoint de cadastro de produtos")
 @RestController
@@ -101,20 +111,16 @@ public class ProductController {
         return ResponseEntity.ok(this.service.delete(id));
     }
 
-    @Operation(summary = "Adiciona produtos ao estoque.")
-    @PutMapping(path = "/addToStock/{id}")
-    public ResponseEntity<ProductResponseDTO> addToStock(
-            @PathVariable Long id,
-            @RequestParam Long quantity) {
-        return ResponseEntity.ok(this.service.addToStock(id, quantity));
+    @Operation(summary = "Gera o código de barras pelo código do EAN")
+    @GetMapping(value = "/barcode/{ean}", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getBarcode(@PathVariable String ean) {
+        return ResponseEntity.ok(this.service.generateBarcodeByEAN(ean));
     }
 
-    @Operation(summary = "Remove produtos do estoque.")
-    @PutMapping(path = "/removeFromStock/{id}")
-    public ResponseEntity<ProductResponseDTO> removeFromStock(
-            @PathVariable Long id,
-            @RequestParam Long quantity) {
-        return ResponseEntity.ok(this.service.removeFromStock(id, quantity));
+    @Operation(summary = "Gera o código de barras pelo ID do produto")
+    @GetMapping(value = "/barcode/{id}/productId", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getBarcode(@PathVariable Long id) {
+        return ResponseEntity.ok(this.service.generateBarcodeByProductId(id));
     }
 
 }

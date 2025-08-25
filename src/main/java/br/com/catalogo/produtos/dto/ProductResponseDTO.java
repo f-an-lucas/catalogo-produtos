@@ -17,7 +17,7 @@ public class ProductResponseDTO {
     String name;
     String description;
     BigDecimal price;
-    Long stock;
+    String ean;
     CategoryResponseDTO category;
 
 }

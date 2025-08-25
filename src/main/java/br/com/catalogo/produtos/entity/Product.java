@@ -27,7 +27,7 @@ public class Product {
     @Column(name = "name_normalized", nullable = false, length = 120)
     private String nameNormalized;
 
-    @Column(length = 500)
+    @Column(nullable = false, length = 500)
     private String description;
 
     @Column(name = "description_normalized", length = 500)
@@ -36,8 +36,8 @@ public class Product {
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal price;
 
-    @Column(nullable = false)
-    private Long stock;
+    @Column(nullable = false, length = 13)
+    private String ean;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")

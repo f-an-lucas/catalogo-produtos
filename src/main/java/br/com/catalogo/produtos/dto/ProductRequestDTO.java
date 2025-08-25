@@ -14,17 +14,17 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class ProductRequestDTO {
 
-    @Size(max = 120)
+    @Size(max = 120, message = "{product.name.size}")
     String name;
 
-    @Size(max = 500)
+    @Size(max = 500, message = "{product.description.size}")
     String description;
 
-    @DecimalMin(value = "0.0", inclusive = true)
+    @DecimalMin(value = "0.0", inclusive = true, message = "{product.price.min}")
     BigDecimal price;
 
-    @Min(0)
-    Long stock;
+    @Size(min = 13, max = 13, message = "{product.ean.size}")
+    String ean;
 
     Long categoryId;
 

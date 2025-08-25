@@ -13,8 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class CategoryRequestDTO {
 
-    @NotBlank
-    @Size(max = 80)
+    @NotBlank(message = "{category.name.blank}")
+    @Size(max = 80, message = "{category.name.size}")
     String name;
 
 }

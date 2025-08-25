@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS products (
     description TEXT,
     description_normalized TEXT,
     price DECIMAL(10, 2) NOT NULL,
-    stock INT NOT NULL,
+    ean VARCHAR(13) NOT NULL UNIQUE,
     category_id INT NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,

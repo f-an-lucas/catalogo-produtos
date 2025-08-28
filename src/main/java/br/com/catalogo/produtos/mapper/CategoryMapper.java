@@ -1,18 +1,18 @@
 package br.com.catalogo.produtos.mapper;
 
-import br.com.catalogo.produtos.dto.CategoryRequestDTO;
-import br.com.catalogo.produtos.dto.CategoryResponseDTO;
-import br.com.catalogo.produtos.entity.Category;
+import br.com.catalogo.produtos.adapter.in.request.CategoryRequest;
+import br.com.catalogo.produtos.response.CategoryResponse;
+import br.com.catalogo.produtos.adapter.out.repository.entity.Category;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CategoryMapper {
 
-    CategoryResponseDTO toDTO(Category entity);
+    CategoryResponse toDTO(Category entity);
 
-    Category toEntity(CategoryRequestDTO dto);
+    Category toEntity(CategoryRequest dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateFromDto(CategoryRequestDTO dto, @MappingTarget Category category);
+    void updateFromDto(CategoryRequest dto, @MappingTarget Category category);
 
 }

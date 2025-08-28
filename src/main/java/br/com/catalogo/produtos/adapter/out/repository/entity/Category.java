@@ -1,10 +1,8 @@
-package br.com.catalogo.produtos.entity;
+package br.com.catalogo.produtos.adapter.out.repository.entity;
 
 import br.com.catalogo.produtos.util.TextNormalizer;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.text.Normalizer;
 
 @Getter
 @Setter

@@ -1,10 +1,9 @@
-package br.com.catalogo.produtos.controller;
+package br.com.catalogo.produtos.adapter.in.controller;
 
-import br.com.catalogo.produtos.dto.CategoryRequestDTO;
-import br.com.catalogo.produtos.dto.CategoryResponseDTO;
-import br.com.catalogo.produtos.entity.Category;
+import br.com.catalogo.produtos.adapter.in.request.CategoryRequest;
+import br.com.catalogo.produtos.response.CategoryResponse;
 import br.com.catalogo.produtos.filter.CategoryFilter;
-import br.com.catalogo.produtos.service.CategoryService;
+import br.com.catalogo.produtos.core.usecase.CategoryUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -12,9 +11,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -25,15 +22,15 @@ import java.net.URI;
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
 
-    private final CategoryService service;
+    private final CategoryUseCase service;
 
-    public CategoryController(CategoryService service) {
+    public CategoryController(CategoryUseCase service) {
         this.service = service;
     }
 
     @Operation(summary = "Lista as categorias (paginado).")
     @GetMapping(path = "")
-    public ResponseEntity<Page<CategoryResponseDTO>> findAll(
+    public ResponseEntity<Page<CategoryResponse>> findAll(
             @ParameterObject CategoryFilter filter,
             @ParameterObject @PageableDefault(size = 10) Pageable pageable
     ) {
@@ -42,13 +39,13 @@ public class CategoryController {
 
     @Operation(summary = "Busca uma categoria pelo seu ID.")
     @GetMapping(path = "/{id}")
-    public ResponseEntity<CategoryResponseDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<CategoryResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(this.service.findById(id));
     }
 
     @Operation(summary = "Lista as categorias por nome (completo ou parte). A busca ignora letras maiúsculas/minúsculas e acentos.")
     @GetMapping(path = "/searchByName")
-    public ResponseEntity<Page<CategoryResponseDTO>> findByName(
+    public ResponseEntity<Page<CategoryResponse>> findByName(
             @RequestParam String name,
             @ParameterObject @PageableDefault(size = 10) Pageable pageable
     ) {
@@ -57,11 +54,11 @@ public class CategoryController {
 
     @Operation(summary = "Cria uma categoria")
     @PostMapping(path = "")
-    public ResponseEntity<CategoryResponseDTO> create(
-            @RequestBody @Valid CategoryRequestDTO dto,
+    public ResponseEntity<CategoryResponse> create(
+            @RequestBody @Valid CategoryRequest dto,
             UriComponentsBuilder uriBuilder
     ) {
-        CategoryResponseDTO response = this.service.create(dto);
+        CategoryResponse response = this.service.create(dto);
         URI location = uriBuilder
                 .path("/categories/{id}")
                 .buildAndExpand(response.getId())
@@ -71,15 +68,15 @@ public class CategoryController {
 
     @Operation(summary = "Atualiza uma categoria")
     @PutMapping(path = "/{id}")
-    public ResponseEntity<CategoryResponseDTO> update(
+    public ResponseEntity<CategoryResponse> update(
             @PathVariable Long id,
-            @RequestBody @Valid CategoryRequestDTO dto) {
+            @RequestBody @Valid CategoryRequest dto) {
         return ResponseEntity.ok(this.service.update(id, dto));
     }
 
     @Operation(summary = "Remove uma categoria")
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<CategoryResponseDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<CategoryResponse> delete(@PathVariable Long id) {
         return ResponseEntity.ok(this.service.delete(id));
     }
 

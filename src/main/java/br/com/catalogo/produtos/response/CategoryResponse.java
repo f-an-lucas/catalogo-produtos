@@ -1,4 +1,4 @@
-package br.com.catalogo.produtos.dto;
+package br.com.catalogo.produtos.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryResponseDTO {
+public class CategoryResponse {
 
     private Long id;
     private String name;

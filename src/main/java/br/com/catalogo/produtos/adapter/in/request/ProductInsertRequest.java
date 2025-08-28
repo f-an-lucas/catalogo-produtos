@@ -1,4 +1,4 @@
-package br.com.catalogo.produtos.dto;
+package br.com.catalogo.produtos.adapter.in.request;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductInsertRequestDTO {
+public class ProductInsertRequest {
 
     @NotBlank(message = "{product.name.blank}")
     @Size(max = 120, message = "{product.name.size}")

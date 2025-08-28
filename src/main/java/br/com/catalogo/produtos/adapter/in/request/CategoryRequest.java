@@ -1,4 +1,4 @@
-package br.com.catalogo.produtos.dto;
+package br.com.catalogo.produtos.adapter.in.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryRequestDTO {
+public class CategoryRequest {
 
     @NotBlank(message = "{category.name.blank}")
     @Size(max = 80, message = "{category.name.size}")

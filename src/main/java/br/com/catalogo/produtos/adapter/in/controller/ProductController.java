@@ -1,49 +1,38 @@
-package br.com.catalogo.produtos.controller;
+package br.com.catalogo.produtos.adapter.in.controller;
 
-import br.com.catalogo.produtos.dto.ProductInsertRequestDTO;
-import br.com.catalogo.produtos.dto.ProductRequestDTO;
-import br.com.catalogo.produtos.dto.ProductResponseDTO;
-import br.com.catalogo.produtos.exception.NotFoundException;
+import br.com.catalogo.produtos.adapter.in.request.ProductInsertRequest;
+import br.com.catalogo.produtos.adapter.in.request.ProductRequest;
+import br.com.catalogo.produtos.response.ProductResponse;
 import br.com.catalogo.produtos.filter.ProductFilter;
-import br.com.catalogo.produtos.service.ProductService;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
+import br.com.catalogo.produtos.core.usecase.ProductUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.apache.coyote.BadRequestException;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.ByteArrayOutputStream;
 import java.net.URI;
-import java.util.Base64;
 
 @Tag(name = "Produtos", description = "Endpoint de cadastro de produtos")
 @RestController
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
-    private final ProductService service;
+    private final ProductUseCase service;
 
-    public ProductController(ProductService service) {
+    public ProductController(ProductUseCase service) {
         this.service = service;
     }
 
     @Operation(summary = "Lista os produtos (paginado).")
     @GetMapping(path = "")
-    public ResponseEntity<Page<ProductResponseDTO>> findAll(
+    public ResponseEntity<Page<ProductResponse>> findAll(
             @ParameterObject ProductFilter filter,
             @ParameterObject @PageableDefault(size = 10) Pageable pageable
     ) {
@@ -52,13 +41,13 @@ public class ProductController {
 
     @Operation(summary = "Busca um produto pelo seu ID.")
     @GetMapping(path = "/{id}")
-    public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(this.service.findById(id));
     }
 
     @Operation(summary = "Lista os produtos por nome (completo ou parte). A busca ignora letras maiúsculas/minúsculas e acentos.")
     @GetMapping(path = "/searchByName")
-    public ResponseEntity<Page<ProductResponseDTO>> findByName(
+    public ResponseEntity<Page<ProductResponse>> findByName(
             @RequestParam String name,
             @ParameterObject @PageableDefault(size = 10) Pageable pageable
     ) {
@@ -67,7 +56,7 @@ public class ProductController {
 
     @Operation(summary = "Lista os produtos por categoria.")
     @GetMapping(path = "/category/{id}")
-    public ResponseEntity<Page<ProductResponseDTO>> findByCategoryId(
+    public ResponseEntity<Page<ProductResponse>> findByCategoryId(
             @PathVariable Long id,
             @ParameterObject @PageableDefault(size = 10) Pageable pageable
     ) {
@@ -76,7 +65,7 @@ public class ProductController {
 
     @Operation(summary = "Lista os produtos por nome (completo ou parte) da categoria. A busca ignora letras maiúsculas/minúsculas e acentos.")
     @GetMapping(path = "/category/searchByName")
-    public ResponseEntity<Page<ProductResponseDTO>> findByCategoryName(
+    public ResponseEntity<Page<ProductResponse>> findByCategoryName(
             @RequestParam String name,
             @ParameterObject @PageableDefault(size = 10) Pageable pageable
     ) {
@@ -85,11 +74,11 @@ public class ProductController {
 
     @Operation(summary = "Insere um produto.")
     @PostMapping(path = "")
-    public ResponseEntity<ProductResponseDTO> create(
-            @RequestBody @Valid ProductInsertRequestDTO dto,
+    public ResponseEntity<ProductResponse> create(
+            @RequestBody @Valid ProductInsertRequest dto,
             UriComponentsBuilder uriBuilder
     ) {
-        ProductResponseDTO response = this.service.create(dto);
+        ProductResponse response = this.service.create(dto);
         URI location = uriBuilder
                 .path("/products/{id}")
                 .buildAndExpand(response.getId())
@@ -99,15 +88,15 @@ public class ProductController {
 
     @Operation(summary = "Atualiza um produto.")
     @PutMapping(path = "/{id}")
-    public ResponseEntity<ProductResponseDTO> update(
+    public ResponseEntity<ProductResponse> update(
             @PathVariable Long id,
-            @RequestBody @Valid ProductRequestDTO dto) {
+            @RequestBody @Valid ProductRequest dto) {
         return ResponseEntity.ok(this.service.update(id, dto));
     }
 
     @Operation(summary = "Remove um produto.")
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<ProductResponseDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<ProductResponse> delete(@PathVariable Long id) {
         return ResponseEntity.ok(this.service.delete(id));
     }
 

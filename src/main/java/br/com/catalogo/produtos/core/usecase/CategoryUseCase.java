@@ -1,28 +1,27 @@
-package br.com.catalogo.produtos.service;
+package br.com.catalogo.produtos.core.usecase;
 
-import br.com.catalogo.produtos.dto.CategoryRequestDTO;
-import br.com.catalogo.produtos.dto.CategoryResponseDTO;
+import br.com.catalogo.produtos.adapter.in.request.CategoryRequest;
+import br.com.catalogo.produtos.response.CategoryResponse;
 import br.com.catalogo.produtos.exception.ConflictException;
 import br.com.catalogo.produtos.exception.NotFoundException;
-import br.com.catalogo.produtos.entity.Category;
+import br.com.catalogo.produtos.adapter.out.repository.entity.Category;
 import br.com.catalogo.produtos.filter.CategoryFilter;
 import br.com.catalogo.produtos.mapper.CategoryMapper;
-import br.com.catalogo.produtos.repository.CategoryRepository;
+import br.com.catalogo.produtos.adapter.out.repository.CategoryRepository;
 import br.com.catalogo.produtos.spec.CategorySpec;
 import br.com.catalogo.produtos.util.TextNormalizer;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CategoryService {
+public class CategoryUseCase {
 
     private final CategoryMapper mapper;
     private final CategoryRepository repository;
 
-    public CategoryService(
+    public CategoryUseCase(
             CategoryRepository repository,
             CategoryMapper mapper
     ) {
@@ -31,7 +30,7 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CategoryResponseDTO> findAll(CategoryFilter filter, Pageable pageable) {
+    public Page<CategoryResponse> findAll(CategoryFilter filter, Pageable pageable) {
         return this.repository.findAll(
                 CategorySpec.withFilter(filter),
                 pageable
@@ -39,7 +38,7 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public CategoryResponseDTO findById(Long id) {
+    public CategoryResponse findById(Long id) {
         return this.mapper.toDTO(
                 this.repository.findById(id)
                         .orElseThrow(() -> new NotFoundException(
@@ -57,7 +56,7 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CategoryResponseDTO> findByName(String name, Pageable pageable) {
+    public Page<CategoryResponse> findByName(String name, Pageable pageable) {
         return this.repository.findByNameNormalizedContainingIgnoreCase(
                 TextNormalizer.normalizeText(name),
                 pageable
@@ -65,7 +64,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public CategoryResponseDTO create(CategoryRequestDTO dto) {
+    public CategoryResponse create(CategoryRequest dto) {
         this.nameExists(dto.getName());
         Category category = this.mapper.toEntity(dto);
         category.setId(null);
@@ -73,7 +72,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public CategoryResponseDTO update(Long id, CategoryRequestDTO dto) {
+    public CategoryResponse update(Long id, CategoryRequest dto) {
         Category category = this.findEntityById(id);
         this.nameExists(dto.getName());
         category.setName(dto.getName());
@@ -81,8 +80,8 @@ public class CategoryService {
     }
 
     @Transactional
-    public CategoryResponseDTO delete(Long id) {
-        CategoryResponseDTO dto = this.findById(id);
+    public CategoryResponse delete(Long id) {
+        CategoryResponse dto = this.findById(id);
         this.repository.deleteById(id);
         return dto;
     }

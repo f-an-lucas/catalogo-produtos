@@ -1,14 +1,14 @@
-package br.com.catalogo.produtos.service;
+package br.com.catalogo.produtos.core.usecase;
 
-import br.com.catalogo.produtos.dto.ProductInsertRequestDTO;
-import br.com.catalogo.produtos.dto.ProductRequestDTO;
-import br.com.catalogo.produtos.dto.ProductResponseDTO;
-import br.com.catalogo.produtos.entity.Product;
+import br.com.catalogo.produtos.adapter.in.request.ProductInsertRequest;
+import br.com.catalogo.produtos.adapter.in.request.ProductRequest;
+import br.com.catalogo.produtos.response.ProductResponse;
+import br.com.catalogo.produtos.adapter.out.repository.entity.Product;
 import br.com.catalogo.produtos.exception.ConflictException;
 import br.com.catalogo.produtos.exception.NotFoundException;
 import br.com.catalogo.produtos.filter.ProductFilter;
 import br.com.catalogo.produtos.mapper.ProductMapper;
-import br.com.catalogo.produtos.repository.ProductRepository;
+import br.com.catalogo.produtos.adapter.out.repository.ProductRepository;
 import br.com.catalogo.produtos.spec.ProductSpec;
 import br.com.catalogo.produtos.util.TextNormalizer;
 import com.google.zxing.BarcodeFormat;
@@ -23,21 +23,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.Base64;
 
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class ProductService {
+public class ProductUseCase {
 
     private final ProductMapper mapper;
     private final ProductRepository repository;
-    private final CategoryService categoryService;
+    private final CategoryUseCase categoryUseCase;
 
     @Transactional(readOnly = true)
-    public Page<ProductResponseDTO> findAll(ProductFilter filter, Pageable pageable) {
+    public Page<ProductResponse> findAll(ProductFilter filter, Pageable pageable) {
         return this.repository.findAll(
                 ProductSpec.withFilter(filter),
                 pageable
@@ -45,7 +42,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public ProductResponseDTO findById(Long id) {
+    public ProductResponse findById(Long id) {
         return this.mapper.toDTO(
                 this.repository.findById(id)
                         .orElseThrow(() -> new NotFoundException(
@@ -62,7 +59,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponseDTO> findByName(String name, Pageable pageable) {
+    public Page<ProductResponse> findByName(String name, Pageable pageable) {
         return this.repository.findByNameNormalizedContainingIgnoreCase(
                 TextNormalizer.normalizeText(name),
                 pageable
@@ -70,7 +67,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponseDTO> findByCategoryId(Long id, Pageable pageable) {
+    public Page<ProductResponse> findByCategoryId(Long id, Pageable pageable) {
         return this.repository.findByCategory_Id(
                 id,
                 pageable
@@ -78,7 +75,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductResponseDTO> findByCategoryName(String name, Pageable pageable) {
+    public Page<ProductResponse> findByCategoryName(String name, Pageable pageable) {
         return this.repository.findByCategory_NameNormalizedContainingIgnoreCase(
                 TextNormalizer.normalizeText(name),
                 pageable
@@ -86,15 +83,15 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponseDTO create(ProductInsertRequestDTO dto) {
+    public ProductResponse create(ProductInsertRequest dto) {
         this.nameExists(dto.getName());
         Product product = this.mapper.toEntity(dto);
-        product.setCategory(this.categoryService.findEntityById(dto.getCategoryId()));
+        product.setCategory(this.categoryUseCase.findEntityById(dto.getCategoryId()));
         return this.mapper.toDTO(this.repository.save(product));
     }
 
     @Transactional
-    public ProductResponseDTO update(Long id, ProductRequestDTO dto) {
+    public ProductResponse update(Long id, ProductRequest dto) {
         Product product = this.findEntityById(id);
 
         this.nameExists(product.getName(), dto.getName());
@@ -102,15 +99,15 @@ public class ProductService {
         this.mapper.updateFromDto(dto, product);
 
         if (dto.getCategoryId() != null) {
-            product.setCategory(this.categoryService.findEntityById(dto.getCategoryId()));
+            product.setCategory(this.categoryUseCase.findEntityById(dto.getCategoryId()));
         }
 
         return this.mapper.toDTO(this.repository.save(product));
     }
 
     @Transactional
-    public ProductResponseDTO delete(Long id) {
-        ProductResponseDTO dto = this.findById(id);
+    public ProductResponse delete(Long id) {
+        ProductResponse dto = this.findById(id);
         this.repository.deleteById(id);
         return dto;
     }

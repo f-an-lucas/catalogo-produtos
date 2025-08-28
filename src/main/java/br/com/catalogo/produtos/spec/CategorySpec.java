@@ -1,6 +1,6 @@
 package br.com.catalogo.produtos.spec;
 
-import br.com.catalogo.produtos.entity.Category;
+import br.com.catalogo.produtos.adapter.out.repository.entity.Category;
 import br.com.catalogo.produtos.filter.CategoryFilter;
 import br.com.catalogo.produtos.util.TextNormalizer;
 import jakarta.persistence.criteria.Predicate;
